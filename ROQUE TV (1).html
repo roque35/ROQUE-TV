@@ -1,0 +1,3542 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roque TV - Lista de 500 canales</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000011;
+      color: #00ffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    #mainTitle {
+      font-weight: bold;
+      font-size: 4rem;
+      text-align: center;
+      user-select: none;
+      margin: 1rem 0 0.8rem 0;
+      display: inline-flex;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.1em;
+    }
+
+    #roqueText span {
+      display: inline-block;
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+    #roqueText span:nth-child(1) { animation-delay: 0s; color: red; }
+    #roqueText span:nth-child(2) { animation-delay: 0.15s; color: orange; }
+    #roqueText span:nth-child(3) { animation-delay: 0.3s; color: yellow; }
+    #roqueText span:nth-child(4) { animation-delay: 0.45s; color: green; }
+    #roqueText span:nth-child(5) { animation-delay: 0.6s; color: cyan; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    #tvText {
+      display: inline-block;
+      font-size: 4rem;
+      letter-spacing: 0.1em;
+      animation: flipHorizontal 3s infinite ease-in-out;
+      color: blue;
+    }
+
+    @keyframes flipHorizontal {
+      0% { transform: rotateY(0deg); color: red; }
+      50% { transform: rotateY(180deg); color: blue; }
+      100% { transform: rotateY(360deg); color: red; }
+    }
+
+    #videoContainer {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 10px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #00557788;
+    }
+
+    #videoContainer.playing {
+      animation: pulseBlueGlow 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseBlueGlow {
+      0% { box-shadow: 0 0 10px 3px #005577aa; }
+      50% { box-shadow: 0 0 20px 6px #0077aaff; }
+      100% { box-shadow: 0 0 10px 3px #005577aa; }
+    }
+
+    video#tvVideo {
+      width: 100%;
+      height: auto;
+      background: black;
+      border-radius: 10px;
+      display: block;
+    }
+
+    #channelList {
+      max-width: 900px;
+      margin: 1rem auto 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: center;
+      max-height: 320px;
+      overflow-y: auto;
+      border: 1px solid #005577aa;
+      padding: 8px;
+      border-radius: 6px;
+      background: #001111dd;
+    }
+
+    .channel-card {
+      background: #001111;
+      border: 1px solid #00cccc;
+      border-radius: 4px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      color: #00cccc;
+      min-width: 110px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.3s, color 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .channel-card img {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+    }
+
+    .channel-card:hover,
+    .channel-card:focus {
+      background: #004444;
+      color: #00ffff;
+    }
+
+    .channel-card.active {
+      background: #00cc00;
+      color: #001100;
+      font-weight: bold;
+      animation: pulseGlowGreen 2s infinite;
+      border-color: #00ff00;
+    }
+
+    @keyframes pulseGlowGreen {
+      0% { box-shadow: 0 0 6px #00ff0088; }
+      50% { box-shadow: 0 0 20px #00ff00ee; }
+      100% { box-shadow: 0 0 6px #00ff0088; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="mainTitle">
+    <span id="roqueText">
+      <span>R</span><span>O</span><span>Q</span><span>U</span><span>E</span>
+    </span>
+    <span id="tvText">TV</span>
+  </h1>
+
+  <div id="videoContainer">
+    <video id="tvVideo" controls playsinline autoplay></video>
+<div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+  <button id="prevChannel" class="nav-btn">
+    <img src="https://i.postimg.cc/3JFvJ8rd/1746128456730.png" alt="Anterior" />
+  </button>
+
+  <button id="playPauseButton" class="nav-btn">
+    <img id="playPauseIcon" src="https://i.postimg.cc/7P7zd1p1/1746128693689.png" alt="Play" />
+  </button>
+
+  <button id="nextChannel" class="nav-btn">
+    <img src="https://i.postimg.cc/Qx373932/IMG-20250501-164336.png" alt="Siguiente" />
+  </button>
+</div>
+
+  </div>
+
+
+<style>
+  .nav-btn {
+    background: #004444;
+    color: #00ffff;
+    border: 2px solid #00cccc;
+    width: 100px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .nav-btn img {
+    width: 20px;
+    height: 20px;
+  }
+</style>
+
+
+<div style="max-width: 900px; margin: 1rem auto 0; display: flex; align-items: center; background: #001111dd; border: 1px solid #005577aa; border-radius: 6px; padding: 0.4rem 0.8rem;">
+  <span style="margin-right: 0.5rem; color: #00cccc; font-size: 1.2rem;">ðŸ"Ž</span>
+  <input type="text" id="channelSearch" placeholder="Buscar canal..." style="flex: 1; background: transparent; border: none; outline: none; color: #00ffff; font-size: 1rem;" />
+</div>
+
+
+  <div id="channelList"></div>
+
+  <script>
+    const tvVideo = document.getElementById('tvVideo');
+    const channelList = document.getElementById('channelList');
+    const videoContainer = document.getElementById('videoContainer');
+
+    const channels = [
+
+      {
+        name: "TELEFUTURO",
+        streamURL: "https://zn1tf.desdeparaguay.net/telefuturo/telefuturo_py_baja/playlist.m3u8?k=1d79cc68099949134f359fd229e85356a8965792447a0d8f42a1aabf3ccc741a&exp=1746038037",
+        logoURL: "https://i.postimg.cc/yxCkBWJQ/Telefuturo2010.png"
+      },
+
+      {
+        name: "SNT",
+        streamURL: "https://alba-py-snt-snt.stream.mediatiquestream.com/index.m3u8",
+        logoURL: "https://i.postimg.cc/SNGgzMGh/snt-hd.png"
+      },
+
+      {
+        name: "LATELE",
+        streamURL: "https://mi-servidor.com/stream/canal3.m3u8",
+        logoURL: "https://i.postimg.cc/Z5XmX2vj/images-1746035253397.jpg"
+      },
+
+      {
+        name: "GEN",
+        streamURL: "https://rds3gen.desdeparaguay.net/gentv/gentv_int_baja/playlist.m3u8?k=e14d9265924a0986d7d1fc3625499d99250b52344d7dc12d0d616992c87453aa&exp=1746036074",
+        logoURL: "https://i.postimg.cc/GtS3t29n/gen-logo-gen-letter-gen-letter-logo-design-initials-gen-logo-linked-with-circle-and-uppercase-monogr.jpg"
+      },
+
+      {
+        name: "C9N",
+        streamURL: "https://alba-py-c9n-c9n.stream.mediatiquestream.com/index.m3u8",
+        logoURL: "https://i.postimg.cc/9f4dQRMC/LOGO-C9-N-2022.png"
+      },
+
+      {
+        name: "TRECE",
+        streamURL: "https://zn1gen.desdeparaguay.net/trecetv/trecetv_alta/playlist.m3u8?k=32d15c35da9b032f08ff54d7fd5dc0caad39fd81cee9f25f459d5d81aa3079d3&exp=1746035643",
+        logoURL: "https://i.postimg.cc/Vs4d2sfR/Logotrececanal.png"
+      },
+
+      {
+        name: "TIGO SPORTS",
+        streamURL: "https://mi-servidor.com/stream/canal7.m3u8",
+        logoURL: "https://i.postimg.cc/cJsQf9X1/unnamed-1746038436223.png"
+      },
+
+      {
+        name: "Canal 8",
+        streamURL: "https://mi-servidor.com/stream/canal8.m3u8",
+        logoURL: "https://i.postimg.cc/cJsQf9X1/unnamed-1746038436223.png"
+      },
+
+      {
+        name: "Canal 9",
+        streamURL: "https://mi-servidor.com/stream/canal9.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal9.png"
+      },
+
+      {
+        name: "Canal 10",
+        streamURL: "https://mi-servidor.com/stream/canal10.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal10.png"
+      },
+
+      {
+        name: "Canal 11",
+        streamURL: "https://mi-servidor.com/stream/canal11.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal11.png"
+      },
+
+      {
+        name: "Canal 12",
+        streamURL: "https://mi-servidor.com/stream/canal12.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal12.png"
+      },
+
+      {
+        name: "Canal 13",
+        streamURL: "https://mi-servidor.com/stream/canal13.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal13.png"
+      },
+
+      {
+        name: "Canal 14",
+        streamURL: "https://mi-servidor.com/stream/canal14.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal14.png"
+      },
+
+      {
+        name: "Canal 15",
+        streamURL: "https://mi-servidor.com/stream/canal15.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal15.png"
+      },
+
+      {
+        name: "Canal 16",
+        streamURL: "https://mi-servidor.com/stream/canal16.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal16.png"
+      },
+
+      {
+        name: "Canal 17",
+        streamURL: "https://mi-servidor.com/stream/canal17.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal17.png"
+      },
+
+      {
+        name: "Canal 18",
+        streamURL: "https://mi-servidor.com/stream/canal18.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal18.png"
+      },
+
+      {
+        name: "Canal 19",
+        streamURL: "https://mi-servidor.com/stream/canal19.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal19.png"
+      },
+
+      {
+        name: "Canal 20",
+        streamURL: "https://mi-servidor.com/stream/canal20.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal20.png"
+      },
+
+      {
+        name: "Canal 21",
+        streamURL: "https://mi-servidor.com/stream/canal21.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal21.png"
+      },
+
+      {
+        name: "Canal 22",
+        streamURL: "https://mi-servidor.com/stream/canal22.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal22.png"
+      },
+
+      {
+        name: "Canal 23",
+        streamURL: "https://mi-servidor.com/stream/canal23.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal23.png"
+      },
+
+      {
+        name: "Canal 24",
+        streamURL: "https://mi-servidor.com/stream/canal24.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal24.png"
+      },
+
+      {
+        name: "Canal 25",
+        streamURL: "https://mi-servidor.com/stream/canal25.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal25.png"
+      },
+
+      {
+        name: "Canal 26",
+        streamURL: "https://mi-servidor.com/stream/canal26.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal26.png"
+      },
+
+      {
+        name: "Canal 27",
+        streamURL: "https://mi-servidor.com/stream/canal27.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal27.png"
+      },
+
+      {
+        name: "Canal 28",
+        streamURL: "https://mi-servidor.com/stream/canal28.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal28.png"
+      },
+
+      {
+        name: "Canal 29",
+        streamURL: "https://mi-servidor.com/stream/canal29.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal29.png"
+      },
+
+      {
+        name: "Canal 30",
+        streamURL: "https://mi-servidor.com/stream/canal30.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal30.png"
+      },
+
+      {
+        name: "Canal 31",
+        streamURL: "https://mi-servidor.com/stream/canal31.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal31.png"
+      },
+
+      {
+        name: "Canal 32",
+        streamURL: "https://mi-servidor.com/stream/canal32.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal32.png"
+      },
+
+      {
+        name: "Canal 33",
+        streamURL: "https://mi-servidor.com/stream/canal33.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal33.png"
+      },
+
+      {
+        name: "Canal 34",
+        streamURL: "https://mi-servidor.com/stream/canal34.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal34.png"
+      },
+
+      {
+        name: "Canal 35",
+        streamURL: "https://mi-servidor.com/stream/canal35.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal35.png"
+      },
+
+      {
+        name: "Canal 36",
+        streamURL: "https://mi-servidor.com/stream/canal36.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal36.png"
+      },
+
+      {
+        name: "Canal 37",
+        streamURL: "https://mi-servidor.com/stream/canal37.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal37.png"
+      },
+
+      {
+        name: "Canal 38",
+        streamURL: "https://mi-servidor.com/stream/canal38.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal38.png"
+      },
+
+      {
+        name: "Canal 39",
+        streamURL: "https://mi-servidor.com/stream/canal39.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal39.png"
+      },
+
+      {
+        name: "Canal 40",
+        streamURL: "https://mi-servidor.com/stream/canal40.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal40.png"
+      },
+
+      {
+        name: "Canal 41",
+        streamURL: "https://mi-servidor.com/stream/canal41.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal41.png"
+      },
+
+      {
+        name: "Canal 42",
+        streamURL: "https://mi-servidor.com/stream/canal42.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal42.png"
+      },
+
+      {
+        name: "Canal 43",
+        streamURL: "https://mi-servidor.com/stream/canal43.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal43.png"
+      },
+
+      {
+        name: "Canal 44",
+        streamURL: "https://mi-servidor.com/stream/canal44.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal44.png"
+      },
+
+      {
+        name: "Canal 45",
+        streamURL: "https://mi-servidor.com/stream/canal45.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal45.png"
+      },
+
+      {
+        name: "Canal 46",
+        streamURL: "https://mi-servidor.com/stream/canal46.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal46.png"
+      },
+
+      {
+        name: "Canal 47",
+        streamURL: "https://mi-servidor.com/stream/canal47.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal47.png"
+      },
+
+      {
+        name: "Canal 48",
+        streamURL: "https://mi-servidor.com/stream/canal48.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal48.png"
+      },
+
+      {
+        name: "Canal 49",
+        streamURL: "https://mi-servidor.com/stream/canal49.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal49.png"
+      },
+
+      {
+        name: "Canal 50",
+        streamURL: "https://mi-servidor.com/stream/canal50.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal50.png"
+      },
+
+      {
+        name: "Canal 51",
+        streamURL: "https://mi-servidor.com/stream/canal51.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal51.png"
+      },
+
+      {
+        name: "Canal 52",
+        streamURL: "https://mi-servidor.com/stream/canal52.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal52.png"
+      },
+
+      {
+        name: "Canal 53",
+        streamURL: "https://mi-servidor.com/stream/canal53.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal53.png"
+      },
+
+      {
+        name: "Canal 54",
+        streamURL: "https://mi-servidor.com/stream/canal54.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal54.png"
+      },
+
+      {
+        name: "Canal 55",
+        streamURL: "https://mi-servidor.com/stream/canal55.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal55.png"
+      },
+
+      {
+        name: "Canal 56",
+        streamURL: "https://mi-servidor.com/stream/canal56.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal56.png"
+      },
+
+      {
+        name: "Canal 57",
+        streamURL: "https://mi-servidor.com/stream/canal57.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal57.png"
+      },
+
+      {
+        name: "Canal 58",
+        streamURL: "https://mi-servidor.com/stream/canal58.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal58.png"
+      },
+
+      {
+        name: "Canal 59",
+        streamURL: "https://mi-servidor.com/stream/canal59.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal59.png"
+      },
+
+      {
+        name: "Canal 60",
+        streamURL: "https://mi-servidor.com/stream/canal60.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal60.png"
+      },
+
+      {
+        name: "Canal 61",
+        streamURL: "https://mi-servidor.com/stream/canal61.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal61.png"
+      },
+
+      {
+        name: "Canal 62",
+        streamURL: "https://mi-servidor.com/stream/canal62.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal62.png"
+      },
+
+      {
+        name: "Canal 63",
+        streamURL: "https://mi-servidor.com/stream/canal63.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal63.png"
+      },
+
+      {
+        name: "Canal 64",
+        streamURL: "https://mi-servidor.com/stream/canal64.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal64.png"
+      },
+
+      {
+        name: "Canal 65",
+        streamURL: "https://mi-servidor.com/stream/canal65.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal65.png"
+      },
+
+      {
+        name: "Canal 66",
+        streamURL: "https://mi-servidor.com/stream/canal66.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal66.png"
+      },
+
+      {
+        name: "Canal 67",
+        streamURL: "https://mi-servidor.com/stream/canal67.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal67.png"
+      },
+
+      {
+        name: "Canal 68",
+        streamURL: "https://mi-servidor.com/stream/canal68.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal68.png"
+      },
+
+      {
+        name: "Canal 69",
+        streamURL: "https://mi-servidor.com/stream/canal69.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal69.png"
+      },
+
+      {
+        name: "Canal 70",
+        streamURL: "https://mi-servidor.com/stream/canal70.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal70.png"
+      },
+
+      {
+        name: "Canal 71",
+        streamURL: "https://mi-servidor.com/stream/canal71.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal71.png"
+      },
+
+      {
+        name: "Canal 72",
+        streamURL: "https://mi-servidor.com/stream/canal72.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal72.png"
+      },
+
+      {
+        name: "Canal 73",
+        streamURL: "https://mi-servidor.com/stream/canal73.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal73.png"
+      },
+
+      {
+        name: "Canal 74",
+        streamURL: "https://mi-servidor.com/stream/canal74.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal74.png"
+      },
+
+      {
+        name: "Canal 75",
+        streamURL: "https://mi-servidor.com/stream/canal75.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal75.png"
+      },
+
+      {
+        name: "Canal 76",
+        streamURL: "https://mi-servidor.com/stream/canal76.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal76.png"
+      },
+
+      {
+        name: "Canal 77",
+        streamURL: "https://mi-servidor.com/stream/canal77.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal77.png"
+      },
+
+      {
+        name: "Canal 78",
+        streamURL: "https://mi-servidor.com/stream/canal78.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal78.png"
+      },
+
+      {
+        name: "Canal 79",
+        streamURL: "https://mi-servidor.com/stream/canal79.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal79.png"
+      },
+
+      {
+        name: "Canal 80",
+        streamURL: "https://mi-servidor.com/stream/canal80.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal80.png"
+      },
+
+      {
+        name: "Canal 81",
+        streamURL: "https://mi-servidor.com/stream/canal81.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal81.png"
+      },
+
+      {
+           name: "Canal 82",
+        streamURL: "https://mi-servidor.com/stream/canal82.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal82.png"
+      },
+
+      {
+        name: "Canal 83",
+        streamURL: "https://mi-servidor.com/stream/canal83.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal83.png"
+      },
+
+      {
+        name: "Canal 84",
+        streamURL: "https://mi-servidor.com/stream/canal84.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal84.png"
+      },
+
+      {
+        name: "Canal 85",
+        streamURL: "https://mi-servidor.com/stream/canal85.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal85.png"
+      },
+
+      {
+        name: "Canal 86",
+        streamURL: "https://mi-servidor.com/stream/canal86.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal86.png"
+      },
+
+      {
+        name: "Canal 87",
+        streamURL: "https://mi-servidor.com/stream/canal87.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal87.png"
+      },
+
+      {
+        name: "Canal 88",
+        streamURL: "https://mi-servidor.com/stream/canal88.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal88.png"
+      },
+
+      {
+        name: "Canal 89",
+        streamURL: "https://mi-servidor.com/stream/canal89.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal89.png"
+      },
+
+      {
+        name: "Canal 90",
+        streamURL: "https://mi-servidor.com/stream/canal90.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal90.png"
+      },
+
+        {
+        name: "Canal 91",
+        streamURL: "https://mi-servidor.com/stream/canal91.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal91.png"
+      },
+
+      {
+        name: "Canal 92",
+        streamURL: "https://mi-servidor.com/stream/canal92.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal92.png"
+      },
+
+      {
+        name: "Canal 93",
+        streamURL: "https://mi-servidor.com/stream/canal93.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal93.png"
+      },
+
+      {
+        name: "Canal 94",
+        streamURL: "https://mi-servidor.com/stream/canal94.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal94.png"
+      },
+
+      {
+        name: "Canal 95",
+        streamURL: "https://mi-servidor.com/stream/canal95.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal95.png"
+      },
+
+      {
+        name: "Canal 96",
+        streamURL: "https://mi-servidor.com/stream/canal96.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal96.png"
+      },
+
+      {
+        name: "Canal 97",
+        streamURL: "https://mi-servidor.com/stream/canal97.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal97.png"
+      },
+
+      {
+        name: "Canal 98",
+        streamURL: "https://mi-servidor.com/stream/canal98.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal98.png"
+      },
+
+      {
+        name: "Canal 99",
+        streamURL: "https://mi-servidor.com/stream/canal99.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal99.png"
+      },
+
+      {
+        name: "Canal 100",
+        streamURL: "https://mi-servidor.com/stream/canal100.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal100.png"
+      },
+
+      {
+        name: "Canal 101",
+        streamURL: "https://mi-servidor.com/stream/canal101.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal101.png"
+      },
+
+      {
+        name: "Canal 102",
+        streamURL: "https://mi-servidor.com/stream/canal102.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal102.png"
+      },
+
+      {
+        name: "Canal 103",
+        streamURL: "https://mi-servidor.com/stream/canal103.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal103.png"
+      },
+
+      {
+        name: "Canal 104",
+        streamURL: "https://mi-servidor.com/stream/canal104.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal104.png"
+      },
+
+      {
+        name: "Canal 105",
+        streamURL: "https://mi-servidor.com/stream/canal105.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal105.png"
+      },
+
+      {
+        name: "Canal 106",
+        streamURL: "https://mi-servidor.com/stream/canal106.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal106.png"
+      },
+
+      {
+        name: "Canal 107",
+        streamURL: "https://mi-servidor.com/stream/canal107.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal107.png"
+      },
+
+      {
+        name: "Canal 108",
+        streamURL: "https://mi-servidor.com/stream/canal108.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal108.png"
+      },
+
+      {
+        name: "Canal 109",
+        streamURL: "https://mi-servidor.com/stream/canal109.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal109.png"
+      },
+
+      {
+        name: "Canal 110",
+        streamURL: "https://mi-servidor.com/stream/canal110.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal110.png"
+      },
+
+      {
+        name: "Canal 111",
+        streamURL: "https://mi-servidor.com/stream/canal111.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal111.png"
+      },
+
+      {
+        name: "Canal 112",
+        streamURL: "https://mi-servidor.com/stream/canal112.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal112.png"
+      },
+
+      {
+        name: "Canal 113",
+        streamURL: "https://mi-servidor.com/stream/canal113.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal113.png"
+      },
+
+      {
+        name: "Canal 114",
+        streamURL: "https://mi-servidor.com/stream/canal114.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal114.png"
+      },
+
+      {
+        name: "Canal 115",
+        streamURL: "https://mi-servidor.com/stream/canal115.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal115.png"
+      },
+
+      {
+        name: "Canal 116",
+        streamURL: "https://mi-servidor.com/stream/canal116.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal116.png"
+      },
+
+      {
+        name: "Canal 117",
+        streamURL: "https://mi-servidor.com/stream/canal117.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal117.png"
+      },
+
+      {
+        name: "Canal 118",
+        streamURL: "https://mi-servidor.com/stream/canal118.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal118.png"
+      },
+
+      {
+        name: "Canal 119",
+        streamURL: "https://mi-servidor.com/stream/canal119.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal119.png"
+      },
+
+      {
+        name: "Canal 120",
+        streamURL: "https://mi-servidor.com/stream/canal120.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal120.png"
+      },
+
+      {
+        name: "Canal 121",
+        streamURL: "https://mi-servidor.com/stream/canal121.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal121.png"
+      },
+
+      {
+        name: "Canal 122",
+        streamURL: "https://mi-servidor.com/stream/canal122.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal122.png"
+      },
+
+      {
+        name: "Canal 123",
+        streamURL: "https://mi-servidor.com/stream/canal123.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal123.png"
+      },
+
+      {
+        name: "Canal 124",
+        streamURL: "https://mi-servidor.com/stream/canal124.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal124.png"
+      },
+
+      {
+        name: "Canal 125",
+        streamURL: "https://mi-servidor.com/stream/canal125.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal125.png"
+      },
+
+      {
+        name: "Canal 126",
+        streamURL: "https://mi-servidor.com/stream/canal126.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal126.png"
+      },
+
+      {
+        name: "Canal 127",
+        streamURL: "https://mi-servidor.com/stream/canal127.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal127.png"
+      },
+
+      {
+        name: "Canal 128",
+        streamURL: "https://mi-servidor.com/stream/canal128.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal128.png"
+      },
+
+      {
+        name: "Canal 129",
+        streamURL: "https://mi-servidor.com/stream/canal129.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal129.png"
+      },
+
+      {
+        name: "Canal 130",
+        streamURL: "https://mi-servidor.com/stream/canal130.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal130.png"
+      },
+
+      {
+        name: "Canal 131",
+        streamURL: "https://mi-servidor.com/stream/canal131.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal131.png"
+      },
+
+      {
+        name: "Canal 132",
+        streamURL: "https://mi-servidor.com/stream/canal132.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal132.png"
+      },
+
+      {
+        name: "Canal 133",
+        streamURL: "https://mi-servidor.com/stream/canal133.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal133.png"
+      },
+
+      {
+        name: "Canal 134",
+        streamURL: "https://mi-servidor.com/stream/canal134.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal134.png"
+      },
+
+      {
+        name: "Canal 135",
+        streamURL: "https://mi-servidor.com/stream/canal135.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal135.png"
+      },
+
+      {
+        name: "Canal 136",
+        streamURL: "https://mi-servidor.com/stream/canal136.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal136.png"
+      },
+
+      {
+        name: "Canal 137",
+        streamURL: "https://mi-servidor.com/stream/canal137.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal137.png"
+      },
+
+      {
+        name: "Canal 138",
+        streamURL: "https://mi-servidor.com/stream/canal138.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal138.png"
+      },
+
+      {
+        name: "Canal 139",
+        streamURL: "https://mi-servidor.com/stream/canal139.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal139.png"
+      },
+
+      {
+        name: "Canal 140",
+        streamURL: "https://mi-servidor.com/stream/canal140.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal140.png"
+      },
+
+      {
+        name: "Canal 141",
+        streamURL: "https://mi-servidor.com/stream/canal141.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal141.png"
+      },
+
+      {
+        name: "Canal 142",
+        streamURL: "https://mi-servidor.com/stream/canal142.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal142.png"
+      },
+
+      {
+        name: "Canal 143",
+        streamURL: "https://mi-servidor.com/stream/canal143.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal143.png"
+      },
+
+      {
+        name: "Canal 144",
+        streamURL: "https://mi-servidor.com/stream/canal144.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal144.png"
+      },
+
+      {
+        name: "Canal 145",
+        streamURL: "https://mi-servidor.com/stream/canal145.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal145.png"
+      },
+
+      {
+        name: "Canal 146",
+        streamURL: "https://mi-servidor.com/stream/canal146.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal146.png"
+      },
+
+      {
+        name: "Canal 147",
+        streamURL: "https://mi-servidor.com/stream/canal147.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal147.png"
+      },
+
+      {
+        name: "Canal 148",
+        streamURL: "https://mi-servidor.com/stream/canal148.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal148.png"
+      },
+
+      {
+        name: "Canal 149",
+        streamURL: "https://mi-servidor.com/stream/canal149.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal149.png"
+      },
+
+      {
+        name: "Canal 150",
+        streamURL: "https://mi-servidor.com/stream/canal150.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal150.png"
+      },
+      {
+        name: "Canal 151",
+        streamURL: "https://mi-servidor.com/stream/canal151.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal151.png"
+      },
+
+      {
+        name: "Canal 152",
+        streamURL: "https://mi-servidor.com/stream/canal152.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal152.png"
+      },
+
+      {
+        name: "Canal 153",
+        streamURL: "https://mi-servidor.com/stream/canal153.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal153.png"
+      },
+
+      {
+        name: "Canal 154",
+        streamURL: "https://mi-servidor.com/stream/canal154.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal154.png"
+      },
+
+      {
+        name: "Canal 155",
+        streamURL: "https://mi-servidor.com/stream/canal155.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal155.png"
+      },
+
+      {
+        name: "Canal 156",
+        streamURL: "https://mi-servidor.com/stream/canal156.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal156.png"
+      },
+
+      {
+        name: "Canal 157",
+        streamURL: "https://mi-servidor.com/stream/canal157.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal157.png"
+      },
+
+      {
+        name: "Canal 158",
+        streamURL: "https://mi-servidor.com/stream/canal158.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal158.png"
+      },
+
+      {
+        name: "Canal 159",
+        streamURL: "https://mi-servidor.com/stream/canal159.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal159.png"
+      },
+
+      {
+        name: "Canal 160",
+        streamURL: "https://mi-servidor.com/stream/canal160.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal160.png"
+      },
+
+      {
+        name: "Canal 161",
+        streamURL: "https://mi-servidor.com/stream/canal161.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal161.png"
+      },
+
+      {
+        name: "Canal 162",
+        streamURL: "https://mi-servidor.com/stream/canal162.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal162.png"
+      },
+
+      {
+        name: "Canal 163",
+        streamURL: "https://mi-servidor.com/stream/canal163.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal163.png"
+      },
+
+      {
+        name: "Canal 164",
+        streamURL: "https://mi-servidor.com/stream/canal164.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal164.png"
+      },
+
+      {
+        name: "Canal 165",
+        streamURL: "https://mi-servidor.com/stream/canal165.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal165.png"
+      },
+
+      {
+        name: "Canal 166",
+        streamURL: "https://mi-servidor.com/stream/canal166.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal166.png"
+      },
+
+      {
+        name: "Canal 167",
+        streamURL: "https://mi-servidor.com/stream/canal167.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal167.png"
+      },
+
+      {
+        name: "Canal 168",
+        streamURL: "https://mi-servidor.com/stream/canal168.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal168.png"
+      },
+
+      {
+        name: "Canal 169",
+        streamURL: "https://mi-servidor.com/stream/canal169.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal169.png"
+      },
+
+      {
+        name: "Canal 170",
+        streamURL: "https://mi-servidor.com/stream/canal170.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal170.png"
+      },
+
+      {
+        name: "Canal 171",
+        streamURL: "https://mi-servidor.com/stream/canal171.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal171.png"
+      },
+
+      {
+        name: "Canal 172",
+        streamURL: "https://mi-servidor.com/stream/canal172.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal172.png"
+      },
+
+      {
+        name: "Canal 173",
+        streamURL: "https://mi-servidor.com/stream/canal173.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal173.png"
+      },
+
+      {
+        name: "Canal 174",
+        streamURL: "https://mi-servidor.com/stream/canal174.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal174.png"
+      },
+
+      {
+        name: "Canal 175",
+        streamURL: "https://mi-servidor.com/stream/canal175.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal175.png"
+      },
+
+      {
+        name: "Canal 176",
+        streamURL: "https://mi-servidor.com/stream/canal176.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal176.png"
+      },
+
+      {
+        name: "Canal 177",
+        streamURL: "https://mi-servidor.com/stream/canal177.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal177.png"
+      },
+
+      {
+        name: "Canal 178",
+        streamURL: "https://mi-servidor.com/stream/canal178.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal178.png"
+      },
+
+      {
+        name: "Canal 179",
+        streamURL: "https://mi-servidor.com/stream/canal179.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal179.png"
+      },
+
+      {
+        name: "Canal 180",
+        streamURL: "https://mi-servidor.com/stream/canal180.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal180.png"
+      },
+
+      {
+        name: "Canal 181",
+        streamURL: "https://mi-servidor.com/stream/canal181.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal181.png"
+      },
+
+      {
+        name: "Canal 182",
+        streamURL: "https://mi-servidor.com/stream/canal182.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal182.png"
+      },
+            {
+        name: "Canal 183",
+        streamURL: "https://mi-servidor.com/stream/canal183.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal183.png"
+      },
+
+      {
+        name: "Canal 184",
+        streamURL: "https://mi-servidor.com/stream/canal184.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal184.png"
+      },
+
+      {
+        name: "Canal 185",
+        streamURL: "https://mi-servidor.com/stream/canal185.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal185.png"
+      },
+
+      {
+        name: "Canal 186",
+        streamURL: "https://mi-servidor.com/stream/canal186.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal186.png"
+      },
+
+      {
+        name: "Canal 187",
+        streamURL: "https://mi-servidor.com/stream/canal187.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal187.png"
+      },
+
+      {
+        name: "Canal 188",
+        streamURL: "https://mi-servidor.com/stream/canal188.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal188.png"
+      },
+
+      {
+        name: "Canal 189",
+        streamURL: "https://mi-servidor.com/stream/canal189.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal189.png"
+      },
+
+      {
+        name: "Canal 190",
+        streamURL: "https://mi-servidor.com/stream/canal190.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal190.png"
+      },
+
+      {
+        name: "Canal 191",
+        streamURL: "https://mi-servidor.com/stream/canal191.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal191.png"
+      },
+
+      {
+        name: "Canal 192",
+        streamURL: "https://mi-servidor.com/stream/canal192.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal192.png"
+      },
+
+      {
+        name: "Canal 193",
+        streamURL: "https://mi-servidor.com/stream/canal193.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal193.png"
+      },
+
+      {
+        name: "Canal 194",
+        streamURL: "https://mi-servidor.com/stream/canal194.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal194.png"
+      },
+
+      {
+        name: "Canal 195",
+        streamURL: "https://mi-servidor.com/stream/canal195.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal195.png"
+      },
+
+      {
+        name: "Canal 196",
+        streamURL: "https://mi-servidor.com/stream/canal196.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal196.png"
+      },
+
+      {
+        name: "Canal 197",
+        streamURL: "https://mi-servidor.com/stream/canal197.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal197.png"
+      },
+
+      {
+        name: "Canal 198",
+        streamURL: "https://mi-servidor.com/stream/canal198.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal198.png"
+      },
+
+      {
+        name: "Canal 199",
+        streamURL: "https://mi-servidor.com/stream/canal199.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal199.png"
+      },
+
+      {
+        name: "Canal 200",
+        streamURL: "https://mi-servidor.com/stream/canal200.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal200.png"
+      },
+
+      {
+        name: "Canal 201",
+        streamURL: "https://mi-servidor.com/stream/canal201.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal201.png"
+      },
+
+      {
+        name: "Canal 202",
+        streamURL: "https://mi-servidor.com/stream/canal202.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal202.png"
+      },
+
+      {
+        name: "Canal 203",
+        streamURL: "https://mi-servidor.com/stream/canal203.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal203.png"
+      },
+
+      {
+        name: "Canal 204",
+        streamURL: "https://mi-servidor.com/stream/canal204.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal204.png"
+      },
+
+      {
+        name: "Canal 205",
+        streamURL: "https://mi-servidor.com/stream/canal205.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal205.png"
+      },
+
+      {
+        name: "Canal 206",
+        streamURL: "https://mi-servidor.com/stream/canal206.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal206.png"
+      },
+
+      {
+        name: "Canal 207",
+        streamURL: "https://mi-servidor.com/stream/canal207.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal207.png"
+      },
+
+      {
+        name: "Canal 208",
+        streamURL: "https://mi-servidor.com/stream/canal208.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal208.png"
+      },
+
+      {
+        name: "Canal 209",
+        streamURL: "https://mi-servidor.com/stream/canal209.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal209.png"
+      },
+
+      {
+        name: "Canal 210",
+        streamURL: "https://mi-servidor.com/stream/canal210.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal210.png"
+      },
+
+      {
+        name: "Canal 211",
+        streamURL: "https://mi-servidor.com/stream/canal211.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal211.png"
+      },
+
+      {
+        name: "Canal 212",
+        streamURL: "https://mi-servidor.com/stream/canal212.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal212.png"
+      },
+
+      {
+        name: "Canal 213",
+        streamURL: "https://mi-servidor.com/stream/canal213.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal213.png"
+      },
+
+      {
+        name: "Canal 214",
+        streamURL: "https://mi-servidor.com/stream/canal214.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal214.png"
+      },
+
+      {
+        name: "Canal 215",
+        streamURL: "https://mi-servidor.com/stream/canal215.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal215.png"
+      },
+
+      {
+        name: "Canal 216",
+        streamURL: "https://mi-servidor.com/stream/canal216.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal216.png"
+      },
+
+      {
+        name: "Canal 217",
+        streamURL: "https://mi-servidor.com/stream/canal217.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal217.png"
+      },
+
+      {
+        name: "Canal 218",
+        streamURL: "https://mi-servidor.com/stream/canal218.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal218.png"
+      },
+
+      {
+        name: "Canal 219",
+        streamURL: "https://mi-servidor.com/stream/canal219.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal219.png"
+      },
+
+      {
+        name: "Canal 220",
+        streamURL: "https://mi-servidor.com/stream/canal220.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal220.png"
+      },
+
+      {
+        name: "Canal 221",
+        streamURL: "https://mi-servidor.com/stream/canal221.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal221.png"
+      },
+
+      {
+        name: "Canal 222",
+        streamURL: "https://mi-servidor.com/stream/canal222.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal222.png"
+      },
+
+      {
+        name: "Canal 223",
+        streamURL: "https://mi-servidor.com/stream/canal223.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal223.png"
+      },
+
+      {
+        name: "Canal 224",
+        streamURL: "https://mi-servidor.com/stream/canal224.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal224.png"
+      },
+
+      {
+        name: "Canal 225",
+        streamURL: "https://mi-servidor.com/stream/canal225.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal225.png"
+      },
+
+      {
+        name: "Canal 226",
+        streamURL: "https://mi-servidor.com/stream/canal226.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal226.png"
+      },
+
+      {
+        name: "Canal 227",
+        streamURL: "https://mi-servidor.com/stream/canal227.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal227.png"
+      },
+
+      {
+        name: "Canal 228",
+        streamURL: "https://mi-servidor.com/stream/canal228.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal228.png"
+      },
+
+      {
+        name: "Canal 229",
+        streamURL: "https://mi-servidor.com/stream/canal229.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal229.png"
+      },
+
+      {
+        name: "Canal 230",
+        streamURL: "https://mi-servidor.com/stream/canal230.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal230.png"
+      },
+
+      {
+        name: "Canal 231",
+        streamURL: "https://mi-servidor.com/stream/canal231.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal231.png"
+      },
+
+      {
+        name: "Canal 232",
+        streamURL: "https://mi-servidor.com/stream/canal232.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal232.png"
+      },
+
+      {
+        name: "Canal 233",
+        streamURL: "https://mi-servidor.com/stream/canal233.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal233.png"
+      },
+
+      {
+        name: "Canal 234",
+        streamURL: "https://mi-servidor.com/stream/canal234.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal234.png"
+      },
+
+      {
+        name: "Canal 235",
+        streamURL: "https://mi-servidor.com/stream/canal235.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal235.png"
+      },
+
+      {
+        name: "Canal 236",
+        streamURL: "https://mi-servidor.com/stream/canal236.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal236.png"
+      },
+
+      {
+        name: "Canal 237",
+        streamURL: "https://mi-servidor.com/stream/canal237.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal237.png"
+      },
+
+      {
+        name: "Canal 238",
+        streamURL: "https://mi-servidor.com/stream/canal238.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal238.png"
+      },
+
+      {
+        name: "Canal 239",
+        streamURL: "https://mi-servidor.com/stream/canal239.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal239.png"
+      },
+
+      {
+        name: "Canal 240",
+        streamURL: "https://mi-servidor.com/stream/canal240.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal240.png"
+      },
+
+      {
+        name: "Canal 241",
+        streamURL: "https://mi-servidor.com/stream/canal241.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal241.png"
+      },
+
+      {
+        name: "Canal 242",
+        streamURL: "https://mi-servidor.com/stream/canal242.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal242.png"
+      },
+
+      {
+        name: "Canal 243",
+        streamURL: "https://mi-servidor.com/stream/canal243.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal243.png"
+      },
+
+      {
+        name: "Canal 244",
+        streamURL: "https://mi-servidor.com/stream/canal244.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal244.png"
+      },
+
+      {
+        name: "Canal 245",
+        streamURL: "https://mi-servidor.com/stream/canal245.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal245.png"
+      },
+
+      {
+        name: "Canal 246",
+        streamURL: "https://mi-servidor.com/stream/canal246.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal246.png"
+      },
+
+      {
+        name: "Canal 247",
+        streamURL: "https://mi-servidor.com/stream/canal247.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal247.png"
+      },
+
+      {
+        name: "Canal 248",
+        streamURL: "https://mi-servidor.com/stream/canal248.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal248.png"
+      },
+
+      {
+        name: "Canal 249",
+        streamURL: "https://mi-servidor.com/stream/canal249.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal249.png"
+      },
+
+      {
+        name: "Canal 250",
+        streamURL: "https://mi-servidor.com/stream/canal250.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal250.png"
+      },
+            {
+        name: "Canal 251",
+        streamURL: "https://mi-servidor.com/stream/canal251.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal251.png"
+      },
+
+      {
+        name: "Canal 252",
+        streamURL: "https://mi-servidor.com/stream/canal252.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal252.png"
+      },
+
+      {
+        name: "Canal 253",
+        streamURL: "https://mi-servidor.com/stream/canal253.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal253.png"
+      },
+
+      {
+        name: "Canal 254",
+        streamURL: "https://mi-servidor.com/stream/canal254.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal254.png"
+      },
+
+      {
+        name: "Canal 255",
+        streamURL: "https://mi-servidor.com/stream/canal255.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal255.png"
+      },
+
+      {
+        name: "Canal 256",
+        streamURL: "https://mi-servidor.com/stream/canal256.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal256.png"
+      },
+
+      {
+        name: "Canal 257",
+        streamURL: "https://mi-servidor.com/stream/canal257.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal257.png"
+      },
+
+      {
+        name: "Canal 258",
+        streamURL: "https://mi-servidor.com/stream/canal258.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal258.png"
+      },
+
+      {
+        name: "Canal 259",
+        streamURL: "https://mi-servidor.com/stream/canal259.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal259.png"
+      },
+
+      {
+        name: "Canal 260",
+        streamURL: "https://mi-servidor.com/stream/canal260.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal260.png"
+      },
+
+      {
+        name: "Canal 261",
+        streamURL: "https://mi-servidor.com/stream/canal261.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal261.png"
+      },
+
+      {
+        name: "Canal 262",
+        streamURL: "https://mi-servidor.com/stream/canal262.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal262.png"
+      },
+
+      {
+        name: "Canal 263",
+        streamURL: "https://mi-servidor.com/stream/canal263.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal263.png"
+      },
+
+      {
+        name: "Canal 264",
+        streamURL: "https://mi-servidor.com/stream/canal264.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal264.png"
+      },
+
+      {
+        name: "Canal 265",
+        streamURL: "https://mi-servidor.com/stream/canal265.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal265.png"
+      },
+
+      {
+        name: "Canal 266",
+        streamURL: "https://mi-servidor.com/stream/canal266.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal266.png"
+      },
+
+      {
+        name: "Canal 267",
+        streamURL: "https://mi-servidor.com/stream/canal267.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal267.png"
+      },
+
+      {
+        name: "Canal 268",
+        streamURL: "https://mi-servidor.com/stream/canal268.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal268.png"
+      },
+
+      {
+        name: "Canal 269",
+        streamURL: "https://mi-servidor.com/stream/canal269.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal269.png"
+      },
+
+      {
+        name: "Canal 270",
+        streamURL: "https://mi-servidor.com/stream/canal270.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal270.png"
+      },
+
+      {
+        name: "Canal 271",
+        streamURL: "https://mi-servidor.com/stream/canal271.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal271.png"
+      },
+
+      {
+        name: "Canal 272",
+        streamURL: "https://mi-servidor.com/stream/canal272.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal272.png"
+      },
+
+      {
+        name: "Canal 273",
+        streamURL: "https://mi-servidor.com/stream/canal273.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal273.png"
+      },
+
+      {
+        name: "Canal 274",
+        streamURL: "https://mi-servidor.com/stream/canal274.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal274.png"
+      },
+
+      {
+        name: "Canal 275",
+        streamURL: "https://mi-servidor.com/stream/canal275.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal275.png"
+      },
+
+      {
+        name: "Canal 276",
+        streamURL: "https://mi-servidor.com/stream/canal276.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal276.png"
+      },
+
+      {
+        name: "Canal 277",
+        streamURL: "https://mi-servidor.com/stream/canal277.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal277.png"
+      },
+
+      {
+        name: "Canal 278",
+        streamURL: "https://mi-servidor.com/stream/canal278.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal278.png"
+      },
+
+      {
+        name: "Canal 279",
+        streamURL: "https://mi-servidor.com/stream/canal279.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal279.png"
+      },
+
+      {
+        name: "Canal 280",
+        streamURL: "https://mi-servidor.com/stream/canal280.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal280.png"
+      },
+
+      {
+        name: "Canal 281",
+        streamURL: "https://mi-servidor.com/stream/canal281.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal281.png"
+      },
+
+      {
+        name: "Canal 282",
+        streamURL: "https://mi-servidor.com/stream/canal282.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal282.png"
+      },
+            {
+        name: "Canal 283",
+        streamURL: "https://mi-servidor.com/stream/canal283.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal283.png"
+      },
+
+      {
+        name: "Canal 284",
+        streamURL: "https://mi-servidor.com/stream/canal284.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal284.png"
+      },
+
+      {
+        name: "Canal 285",
+        streamURL: "https://mi-servidor.com/stream/canal285.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal285.png"
+      },
+
+      {
+        name: "Canal 286",
+        streamURL: "https://mi-servidor.com/stream/canal286.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal286.png"
+      },
+
+      {
+        name: "Canal 287",
+        streamURL: "https://mi-servidor.com/stream/canal287.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal287.png"
+      },
+
+      {
+        name: "Canal 288",
+        streamURL: "https://mi-servidor.com/stream/canal288.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal288.png"
+      },
+
+      {
+        name: "Canal 289",
+        streamURL: "https://mi-servidor.com/stream/canal289.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal289.png"
+      },
+
+      {
+        name: "Canal 290",
+        streamURL: "https://mi-servidor.com/stream/canal290.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal290.png"
+      },
+
+      {
+        name: "Canal 291",
+        streamURL: "https://mi-servidor.com/stream/canal291.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal291.png"
+      },
+
+      {
+        name: "Canal 292",
+        streamURL: "https://mi-servidor.com/stream/canal292.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal292.png"
+      },
+
+      {
+        name: "Canal 293",
+        streamURL: "https://mi-servidor.com/stream/canal293.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal293.png"
+      },
+
+      {
+        name: "Canal 294",
+        streamURL: "https://mi-servidor.com/stream/canal294.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal294.png"
+      },
+
+      {
+        name: "Canal 295",
+        streamURL: "https://mi-servidor.com/stream/canal295.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal295.png"
+      },
+
+      {
+        name: "Canal 296",
+        streamURL: "https://mi-servidor.com/stream/canal296.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal296.png"
+      },
+
+      {
+        name: "Canal 297",
+        streamURL: "https://mi-servidor.com/stream/canal297.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal297.png"
+      },
+
+      {
+        name: "Canal 298",
+        streamURL: "https://mi-servidor.com/stream/canal298.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal298.png"
+      },
+
+      {
+        name: "Canal 299",
+        streamURL: "https://mi-servidor.com/stream/canal299.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal299.png"
+      },
+
+      {
+        name: "Canal 300",
+        streamURL: "https://mi-servidor.com/stream/canal300.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal300.png"
+      },
+
+      {
+        name: "Canal 301",
+        streamURL: "https://mi-servidor.com/stream/canal301.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal301.png"
+      },
+
+      {
+        name: "Canal 302",
+        streamURL: "https://mi-servidor.com/stream/canal302.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal302.png"
+      },
+
+      {
+        name: "Canal 303",
+        streamURL: "https://mi-servidor.com/stream/canal303.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal303.png"
+      },
+
+      {
+        name: "Canal 304",
+        streamURL: "https://mi-servidor.com/stream/canal304.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal304.png"
+      },
+
+      {
+        name: "Canal 305",
+        streamURL: "https://mi-servidor.com/stream/canal305.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal305.png"
+      },
+
+      {
+        name: "Canal 306",
+        streamURL: "https://mi-servidor.com/stream/canal306.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal306.png"
+      },
+
+      {
+        name: "Canal 307",
+        streamURL: "https://mi-servidor.com/stream/canal307.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal307.png"
+      },
+
+      {
+        name: "Canal 308",
+        streamURL: "https://mi-servidor.com/stream/canal308.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal308.png"
+      },
+
+      {
+        name: "Canal 309",
+        streamURL: "https://mi-servidor.com/stream/canal309.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal309.png"
+      },
+
+      {
+        name: "Canal 310",
+        streamURL: "https://mi-servidor.com/stream/canal310.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal310.png"
+      },
+
+      {
+        name: "Canal 311",
+        streamURL: "https://mi-servidor.com/stream/canal311.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal311.png"
+      },
+
+      {
+        name: "Canal 312",
+        streamURL: "https://mi-servidor.com/stream/canal312.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal312.png"
+      },
+
+      {
+        name: "Canal 313",
+        streamURL: "https://mi-servidor.com/stream/canal313.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal313.png"
+      },
+
+      {
+        name: "Canal 314",
+        streamURL: "https://mi-servidor.com/stream/canal314.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal314.png"
+      },
+
+      {
+        name: "Canal 315",
+        streamURL: "https://mi-servidor.com/stream/canal315.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal315.png"
+      },
+
+      {
+        name: "Canal 316",
+        streamURL: "https://mi-servidor.com/stream/canal316.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal316.png"
+      },
+
+      {
+        name: "Canal 317",
+        streamURL: "https://mi-servidor.com/stream/canal317.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal317.png"
+      },
+
+      {
+        name: "Canal 318",
+        streamURL: "https://mi-servidor.com/stream/canal318.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal318.png"
+      },
+
+      {
+        name: "Canal 319",
+        streamURL: "https://mi-servidor.com/stream/canal319.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal319.png"
+      },
+
+      {
+        name: "Canal 320",
+        streamURL: "https://mi-servidor.com/stream/canal320.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal320.png"
+      },
+
+      {
+        name: "Canal 321",
+        streamURL: "https://mi-servidor.com/stream/canal321.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal321.png"
+      },
+
+      {
+        name: "Canal 322",
+        streamURL: "https://mi-servidor.com/stream/canal322.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal322.png"
+      },
+
+      {
+        name: "Canal 323",
+        streamURL: "https://mi-servidor.com/stream/canal323.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal323.png"
+      },
+
+      {
+        name: "Canal 324",
+        streamURL: "https://mi-servidor.com/stream/canal324.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal324.png"
+      },
+
+      {
+        name: "Canal 325",
+        streamURL: "https://mi-servidor.com/stream/canal325.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal325.png"
+      },
+
+      {
+        name: "Canal 326",
+        streamURL: "https://mi-servidor.com/stream/canal326.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal326.png"
+      },
+
+      {
+        name: "Canal 327",
+        streamURL: "https://mi-servidor.com/stream/canal327.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal327.png"
+      },
+
+      {
+        name: "Canal 328",
+        streamURL: "https://mi-servidor.com/stream/canal328.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal328.png"
+      },
+
+      {
+        name: "Canal 329",
+        streamURL: "https://mi-servidor.com/stream/canal329.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal329.png"
+      },
+
+      {
+        name: "Canal 330",
+        streamURL: "https://mi-servidor.com/stream/canal330.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal330.png"
+      },
+
+      {
+        name: "Canal 331",
+        streamURL: "https://mi-servidor.com/stream/canal331.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal331.png"
+      },
+
+      {
+        name: "Canal 332",
+        streamURL: "https://mi-servidor.com/stream/canal332.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal332.png"
+      },
+
+      {
+        name: "Canal 333",
+        streamURL: "https://mi-servidor.com/stream/canal333.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal333.png"
+      },
+
+      {
+        name: "Canal 334",
+        streamURL: "https://mi-servidor.com/stream/canal334.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal334.png"
+      },
+
+      {
+        name: "Canal 335",
+        streamURL: "https://mi-servidor.com/stream/canal335.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal335.png"
+      },
+
+      {
+        name: "Canal 336",
+        streamURL: "https://mi-servidor.com/stream/canal336.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal336.png"
+      },
+
+      {
+        name: "Canal 337",
+        streamURL: "https://mi-servidor.com/stream/canal337.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal337.png"
+      },
+
+      {
+        name: "Canal 338",
+        streamURL: "https://mi-servidor.com/stream/canal338.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal338.png"
+      },
+
+      {
+        name: "Canal 339",
+        streamURL: "https://mi-servidor.com/stream/canal339.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal339.png"
+      },
+
+      {
+        name: "Canal 340",
+        streamURL: "https://mi-servidor.com/stream/canal340.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal340.png"
+      },
+
+      {
+        name: "Canal 341",
+        streamURL: "https://mi-servidor.com/stream/canal341.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal341.png"
+      },
+
+      {
+        name: "Canal 342",
+        streamURL: "https://mi-servidor.com/stream/canal342.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal342.png"
+      },
+
+      {
+        name: "Canal 343",
+        streamURL: "https://mi-servidor.com/stream/canal343.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal343.png"
+      },
+
+      {
+        name: "Canal 344",
+        streamURL: "https://mi-servidor.com/stream/canal344.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal344.png"
+      },
+
+      {
+        name: "Canal 345",
+        streamURL: "https://mi-servidor.com/stream/canal345.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal345.png"
+      },
+
+      {
+        name: "Canal 346",
+        streamURL: "https://mi-servidor.com/stream/canal346.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal346.png"
+      },
+
+      {
+        name: "Canal 347",
+        streamURL: "https://mi-servidor.com/stream/canal347.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal347.png"
+      },
+
+      {
+        name: "Canal 348",
+        streamURL: "https://mi-servidor.com/stream/canal348.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal348.png"
+      },
+
+      {
+        name: "Canal 349",
+        streamURL: "https://mi-servidor.com/stream/canal349.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal349.png"
+      },
+
+      {
+        name: "Canal 350",
+        streamURL: "https://mi-servidor.com/stream/canal350.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal350.png"
+      },
+      {
+        name: "Canal 351",
+        streamURL: "https://mi-servidor.com/stream/canal351.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal351.png"
+      },
+
+      {
+        name: "Canal 352",
+        streamURL: "https://mi-servidor.com/stream/canal352.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal352.png"
+      },
+
+      {
+        name: "Canal 353",
+        streamURL: "https://mi-servidor.com/stream/canal353.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal353.png"
+      },
+
+      {
+        name: "Canal 354",
+        streamURL: "https://mi-servidor.com/stream/canal354.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal354.png"
+      },
+
+      {
+        name: "Canal 355",
+        streamURL: "https://mi-servidor.com/stream/canal355.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal355.png"
+      },
+
+      {
+        name: "Canal 356",
+        streamURL: "https://mi-servidor.com/stream/canal356.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal356.png"
+      },
+
+      {
+        name: "Canal 357",
+        streamURL: "https://mi-servidor.com/stream/canal357.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal357.png"
+      },
+
+      {
+        name: "Canal 358",
+        streamURL: "https://mi-servidor.com/stream/canal358.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal358.png"
+      },
+
+      {
+        name: "Canal 359",
+        streamURL: "https://mi-servidor.com/stream/canal359.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal359.png"
+      },
+
+      {
+        name: "Canal 360",
+        streamURL: "https://mi-servidor.com/stream/canal360.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal360.png"
+      },
+
+      {
+        name: "Canal 361",
+        streamURL: "https://mi-servidor.com/stream/canal361.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal361.png"
+      },
+
+      {
+        name: "Canal 362",
+        streamURL: "https://mi-servidor.com/stream/canal362.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal362.png"
+      },
+
+      {
+        name: "Canal 363",
+        streamURL: "https://mi-servidor.com/stream/canal363.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal363.png"
+      },
+
+      {
+        name: "Canal 364",
+        streamURL: "https://mi-servidor.com/stream/canal364.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal364.png"
+      },
+
+      {
+        name: "Canal 365",
+        streamURL: "https://mi-servidor.com/stream/canal365.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal365.png"
+      },
+
+      {
+        name: "Canal 366",
+        streamURL: "https://mi-servidor.com/stream/canal366.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal366.png"
+      },
+
+      {
+        name: "Canal 367",
+        streamURL: "https://mi-servidor.com/stream/canal367.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal367.png"
+      },
+
+      {
+        name: "Canal 368",
+        streamURL: "https://mi-servidor.com/stream/canal368.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal368.png"
+      },
+
+      {
+        name: "Canal 369",
+        streamURL: "https://mi-servidor.com/stream/canal369.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal369.png"
+      },
+
+      {
+        name: "Canal 370",
+        streamURL: "https://mi-servidor.com/stream/canal370.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal370.png"
+      },
+
+      {
+        name: "Canal 371",
+        streamURL: "https://mi-servidor.com/stream/canal371.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal371.png"
+      },
+
+      {
+        name: "Canal 372",
+        streamURL: "https://mi-servidor.com/stream/canal372.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal372.png"
+      },
+
+      {
+        name: "Canal 373",
+        streamURL: "https://mi-servidor.com/stream/canal373.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal373.png"
+      },
+
+      {
+        name: "Canal 374",
+        streamURL: "https://mi-servidor.com/stream/canal374.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal374.png"
+      },
+
+      {
+        name: "Canal 375",
+        streamURL: "https://mi-servidor.com/stream/canal375.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal375.png"
+      },
+
+      {
+        name: "Canal 376",
+        streamURL: "https://mi-servidor.com/stream/canal376.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal376.png"
+      },
+
+      {
+        name: "Canal 377",
+        streamURL: "https://mi-servidor.com/stream/canal377.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal377.png"
+      },
+
+      {
+        name: "Canal 378",
+        streamURL: "https://mi-servidor.com/stream/canal378.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal378.png"
+      },
+
+      {
+        name: "Canal 379",
+        streamURL: "https://mi-servidor.com/stream/canal379.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal379.png"
+      },
+
+      {
+        name: "Canal 380",
+        streamURL: "https://mi-servidor.com/stream/canal380.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal380.png"
+      },
+
+      {
+        name: "Canal 381",
+        streamURL: "https://mi-servidor.com/stream/canal381.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal381.png"
+      },
+
+      {
+        name: "Canal 382",
+        streamURL: "https://mi-servidor.com/stream/canal382.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal382.png"
+      },
+            {
+        name: "Canal 383",
+        streamURL: "https://mi-servidor.com/stream/canal383.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal383.png"
+      },
+
+      {
+        name: "Canal 384",
+        streamURL: "https://mi-servidor.com/stream/canal384.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal384.png"
+      },
+
+      {
+        name: "Canal 385",
+        streamURL: "https://mi-servidor.com/stream/canal385.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal385.png"
+      },
+
+      {
+        name: "Canal 386",
+        streamURL: "https://mi-servidor.com/stream/canal386.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal386.png"
+      },
+
+      {
+        name: "Canal 387",
+        streamURL: "https://mi-servidor.com/stream/canal387.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal387.png"
+      },
+
+      {
+        name: "Canal 388",
+        streamURL: "https://mi-servidor.com/stream/canal388.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal388.png"
+      },
+
+      {
+        name: "Canal 389",
+        streamURL: "https://mi-servidor.com/stream/canal389.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal389.png"
+      },
+
+      {
+        name: "Canal 390",
+        streamURL: "https://mi-servidor.com/stream/canal390.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal390.png"
+      },
+
+      {
+        name: "Canal 391",
+        streamURL: "https://mi-servidor.com/stream/canal391.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal391.png"
+      },
+
+      {
+        name: "Canal 392",
+        streamURL: "https://mi-servidor.com/stream/canal392.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal392.png"
+      },
+
+      {
+        name: "Canal 393",
+        streamURL: "https://mi-servidor.com/stream/canal393.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal393.png"
+      },
+
+      {
+        name: "Canal 394",
+        streamURL: "https://mi-servidor.com/stream/canal394.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal394.png"
+      },
+
+      {
+        name: "Canal 395",
+        streamURL: "https://mi-servidor.com/stream/canal395.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal395.png"
+      },
+
+      {
+        name: "Canal 396",
+        streamURL: "https://mi-servidor.com/stream/canal396.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal396.png"
+      },
+
+      {
+        name: "Canal 397",
+        streamURL: "https://mi-servidor.com/stream/canal397.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal397.png"
+      },
+
+      {
+        name: "Canal 398",
+        streamURL: "https://mi-servidor.com/stream/canal398.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal398.png"
+      },
+
+      {
+        name: "Canal 399",
+        streamURL: "https://mi-servidor.com/stream/canal399.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal399.png"
+      },
+
+      {
+        name: "Canal 400",
+        streamURL: "https://mi-servidor.com/stream/canal400.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal400.png"
+      },
+
+      {
+        name: "Canal 401",
+        streamURL: "https://mi-servidor.com/stream/canal401.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal401.png"
+      },
+
+      {
+        name: "Canal 402",
+        streamURL: "https://mi-servidor.com/stream/canal402.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal402.png"
+      },
+
+      {
+        name: "Canal 403",
+        streamURL: "https://mi-servidor.com/stream/canal403.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal403.png"
+      },
+
+      {
+        name: "Canal 404",
+        streamURL: "https://mi-servidor.com/stream/canal404.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal404.png"
+      },
+
+      {
+        name: "Canal 405",
+        streamURL: "https://mi-servidor.com/stream/canal405.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal405.png"
+      },
+
+      {
+        name: "Canal 406",
+        streamURL: "https://mi-servidor.com/stream/canal406.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal406.png"
+      },
+
+      {
+        name: "Canal 407",
+        streamURL: "https://mi-servidor.com/stream/canal407.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal407.png"
+      },
+
+      {
+        name: "Canal 408",
+        streamURL: "https://mi-servidor.com/stream/canal408.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal408.png"
+      },
+
+      {
+        name: "Canal 409",
+        streamURL: "https://mi-servidor.com/stream/canal409.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal409.png"
+      },
+
+      {
+        name: "Canal 410",
+        streamURL: "https://mi-servidor.com/stream/canal410.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal410.png"
+      },
+
+      {
+        name: "Canal 411",
+        streamURL: "https://mi-servidor.com/stream/canal411.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal411.png"
+      },
+
+      {
+        name: "Canal 412",
+        streamURL: "https://mi-servidor.com/stream/canal412.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal412.png"
+      },
+
+      {
+        name: "Canal 413",
+        streamURL: "https://mi-servidor.com/stream/canal413.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal413.png"
+      },
+
+      {
+        name: "Canal 414",
+        streamURL: "https://mi-servidor.com/stream/canal414.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal414.png"
+      },
+
+      {
+        name: "Canal 415",
+        streamURL: "https://mi-servidor.com/stream/canal415.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal415.png"
+      },
+
+      {
+        name: "Canal 416",
+        streamURL: "https://mi-servidor.com/stream/canal416.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal416.png"
+      },
+
+      {
+        name: "Canal 417",
+        streamURL: "https://mi-servidor.com/stream/canal417.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal417.png"
+      },
+
+      {
+        name: "Canal 418",
+        streamURL: "https://mi-servidor.com/stream/canal418.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal418.png"
+      },
+
+      {
+        name: "Canal 419",
+        streamURL: "https://mi-servidor.com/stream/canal419.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal419.png"
+      },
+
+      {
+        name: "Canal 420",
+        streamURL: "https://mi-servidor.com/stream/canal420.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal420.png"
+      },
+
+      {
+        name: "Canal 421",
+        streamURL: "https://mi-servidor.com/stream/canal421.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal421.png"
+      },
+
+      {
+        name: "Canal 422",
+        streamURL: "https://mi-servidor.com/stream/canal422.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal422.png"
+      },
+
+      {
+        name: "Canal 423",
+        streamURL: "https://mi-servidor.com/stream/canal423.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal423.png"
+      },
+
+      {
+        name: "Canal 424",
+        streamURL: "https://mi-servidor.com/stream/canal424.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal424.png"
+      },
+
+      {
+        name: "Canal 425",
+        streamURL: "https://mi-servidor.com/stream/canal425.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal425.png"
+      },
+
+      {
+        name: "Canal 426",
+        streamURL: "https://mi-servidor.com/stream/canal426.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal426.png"
+      },
+
+      {
+        name: "Canal 427",
+        streamURL: "https://mi-servidor.com/stream/canal427.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal427.png"
+      },
+
+      {
+        name: "Canal 428",
+        streamURL: "https://mi-servidor.com/stream/canal428.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal428.png"
+      },
+
+      {
+        name: "Canal 429",
+        streamURL: "https://mi-servidor.com/stream/canal429.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal429.png"
+      },
+
+      {
+        name: "Canal 430",
+        streamURL: "https://mi-servidor.com/stream/canal430.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal430.png"
+      },
+
+      {
+        name: "Canal 431",
+        streamURL: "https://mi-servidor.com/stream/canal431.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal431.png"
+      },
+
+      {
+        name: "Canal 432",
+        streamURL: "https://mi-servidor.com/stream/canal432.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal432.png"
+      },
+
+      {
+        name: "Canal 433",
+        streamURL: "https://mi-servidor.com/stream/canal433.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal433.png"
+      },
+
+      {
+        name: "Canal 434",
+        streamURL: "https://mi-servidor.com/stream/canal434.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal434.png"
+      },
+
+      {
+        name: "Canal 435",
+        streamURL: "https://mi-servidor.com/stream/canal435.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal435.png"
+      },
+
+      {
+        name: "Canal 436",
+        streamURL: "https://mi-servidor.com/stream/canal436.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal436.png"
+      },
+
+      {
+        name: "Canal 437",
+        streamURL: "https://mi-servidor.com/stream/canal437.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal437.png"
+      },
+
+      {
+        name: "Canal 438",
+        streamURL: "https://mi-servidor.com/stream/canal438.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal438.png"
+      },
+
+      {
+        name: "Canal 439",
+        streamURL: "https://mi-servidor.com/stream/canal439.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal439.png"
+      },
+
+      {
+        name: "Canal 440",
+        streamURL: "https://mi-servidor.com/stream/canal440.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal440.png"
+      },
+
+      {
+        name: "Canal 441",
+        streamURL: "https://mi-servidor.com/stream/canal441.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal441.png"
+      },
+
+      {
+        name: "Canal 442",
+        streamURL: "https://mi-servidor.com/stream/canal442.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal442.png"
+      },
+
+      {
+        name: "Canal 443",
+        streamURL: "https://mi-servidor.com/stream/canal443.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal443.png"
+      },
+
+      {
+        name: "Canal 444",
+        streamURL: "https://mi-servidor.com/stream/canal444.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal444.png"
+      },
+
+      {
+        name: "Canal 445",
+        streamURL: "https://mi-servidor.com/stream/canal445.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal445.png"
+      },
+
+      {
+        name: "Canal 446",
+        streamURL: "https://mi-servidor.com/stream/canal446.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal446.png"
+      },
+
+      {
+        name: "Canal 447",
+        streamURL: "https://mi-servidor.com/stream/canal447.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal447.png"
+      },
+
+      {
+        name: "Canal 448",
+        streamURL: "https://mi-servidor.com/stream/canal448.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal448.png"
+      },
+
+      {
+        name: "Canal 449",
+        streamURL: "https://mi-servidor.com/stream/canal449.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal449.png"
+      },
+
+      {
+        name: "Canal 450",
+        streamURL: "https://mi-servidor.com/stream/canal450.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal450.png"
+      },
+            {
+        name: "Canal 451",
+        streamURL: "https://mi-servidor.com/stream/canal451.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal451.png"
+      },
+
+      {
+        name: "Canal 452",
+        streamURL: "https://mi-servidor.com/stream/canal452.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal452.png"
+      },
+
+      {
+        name: "Canal 453",
+        streamURL: "https://mi-servidor.com/stream/canal453.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal453.png"
+      },
+
+      {
+        name: "Canal 454",
+        streamURL: "https://mi-servidor.com/stream/canal454.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal454.png"
+      },
+
+      {
+        name: "Canal 455",
+        streamURL: "https://mi-servidor.com/stream/canal455.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal455.png"
+      },
+
+      {
+        name: "Canal 456",
+        streamURL: "https://mi-servidor.com/stream/canal456.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal456.png"
+      },
+
+      {
+        name: "Canal 457",
+        streamURL: "https://mi-servidor.com/stream/canal457.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal457.png"
+      },
+
+      {
+        name: "Canal 458",
+        streamURL: "https://mi-servidor.com/stream/canal458.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal458.png"
+      },
+
+      {
+        name: "Canal 459",
+        streamURL: "https://mi-servidor.com/stream/canal459.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal459.png"
+      },
+
+      {
+        name: "Canal 460",
+        streamURL: "https://mi-servidor.com/stream/canal460.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal460.png"
+      },
+
+      {
+        name: "Canal 461",
+        streamURL: "https://mi-servidor.com/stream/canal461.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal461.png"
+      },
+
+      {
+        name: "Canal 462",
+        streamURL: "https://mi-servidor.com/stream/canal462.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal462.png"
+      },
+
+      {
+        name: "Canal 463",
+        streamURL: "https://mi-servidor.com/stream/canal463.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal463.png"
+      },
+
+      {
+        name: "Canal 464",
+        streamURL: "https://mi-servidor.com/stream/canal464.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal464.png"
+      },
+
+      {
+        name: "Canal 465",
+        streamURL: "https://mi-servidor.com/stream/canal465.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal465.png"
+      },
+
+      {
+        name: "Canal 466",
+        streamURL: "https://mi-servidor.com/stream/canal466.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal466.png"
+      },
+
+      {
+        name: "Canal 467",
+        streamURL: "https://mi-servidor.com/stream/canal467.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal467.png"
+      },
+
+      {
+        name: "Canal 468",
+        streamURL: "https://mi-servidor.com/stream/canal468.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal468.png"
+      },
+
+      {
+        name: "Canal 469",
+        streamURL: "https://mi-servidor.com/stream/canal469.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal469.png"
+      },
+
+      {
+        name: "Canal 470",
+        streamURL: "https://mi-servidor.com/stream/canal470.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal470.png"
+      },
+
+      {
+        name: "Canal 471",
+        streamURL: "https://mi-servidor.com/stream/canal471.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal471.png"
+      },
+
+      {
+        name: "Canal 472",
+        streamURL: "https://mi-servidor.com/stream/canal472.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal472.png"
+      },
+
+      {
+        name: "Canal 473",
+        streamURL: "https://mi-servidor.com/stream/canal473.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal473.png"
+      },
+
+      {
+        name: "Canal 474",
+        streamURL: "https://mi-servidor.com/stream/canal474.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal474.png"
+      },
+
+      {
+        name: "Canal 475",
+        streamURL: "https://mi-servidor.com/stream/canal475.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal475.png"
+      },
+
+      {
+        name: "Canal 476",
+        streamURL: "https://mi-servidor.com/stream/canal476.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal476.png"
+      },
+
+      {
+        name: "Canal 477",
+        streamURL: "https://mi-servidor.com/stream/canal477.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal477.png"
+      },
+
+      {
+        name: "Canal 478",
+        streamURL: "https://mi-servidor.com/stream/canal478.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal478.png"
+      },
+
+      {
+        name: "Canal 479",
+        streamURL: "https://mi-servidor.com/stream/canal479.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal479.png"
+      },
+
+      {
+        name: "Canal 480",
+        streamURL: "https://mi-servidor.com/stream/canal480.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal480.png"
+      },
+
+      {
+        name: "Canal 481",
+        streamURL: "https://mi-servidor.com/stream/canal481.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal481.png"
+      },
+
+      {
+        name: "Canal 482",
+        streamURL: "https://mi-servidor.com/stream/canal482.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal482.png"
+      },
+
+      {
+        name: "Canal 483",
+        streamURL: "https://mi-servidor.com/stream/canal483.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal483.png"
+      },
+
+      {
+        name: "Canal 484",
+        streamURL: "https://mi-servidor.com/stream/canal484.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal484.png"
+      },
+
+      {
+        name: "Canal 485",
+        streamURL: "https://mi-servidor.com/stream/canal485.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal485.png"
+      },
+
+      {
+        name: "Canal 486",
+        streamURL: "https://mi-servidor.com/stream/canal486.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal486.png"
+      },
+
+      {
+        name: "Canal 487",
+        streamURL: "https://mi-servidor.com/stream/canal487.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal487.png"
+      },
+
+      {
+        name: "Canal 488",
+        streamURL: "https://mi-servidor.com/stream/canal488.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal488.png"
+      },
+
+      {
+        name: "Canal 489",
+        streamURL: "https://mi-servidor.com/stream/canal489.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal489.png"
+      },
+
+      {
+        name: "Canal 490",
+        streamURL: "https://mi-servidor.com/stream/canal490.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal490.png"
+      },
+
+      {
+        name: "Canal 491",
+        streamURL: "https://mi-servidor.com/stream/canal491.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal491.png"
+      },
+
+      {
+        name: "Canal 492",
+        streamURL: "https://mi-servidor.com/stream/canal492.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal492.png"
+      },
+
+      {
+        name: "Canal 493",
+        streamURL: "https://mi-servidor.com/stream/canal493.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal493.png"
+      },
+
+      {
+        name: "Canal 494",
+        streamURL: "https://mi-servidor.com/stream/canal494.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal494.png"
+      },
+
+      {
+        name: "Canal 495",
+        streamURL: "https://mi-servidor.com/stream/canal495.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal495.png"
+      },
+
+      {
+        name: "Canal 496",
+        streamURL: "https://mi-servidor.com/stream/canal496.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal496.png"
+      },
+
+      {
+  name: "Canal 497",
+        streamURL: "https://mi-servidor.com/stream/canal497.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal497.png"
+      },
+
+      {
+        name: "Canal 498",
+        streamURL: "https://mi-servidor.com/stream/canal498.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal498.png"
+      },
+
+      {
+        name: "Canal 499",
+        streamURL: "https://mi-servidor.com/stream/canal499.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal499.png"
+      },
+
+      {
+        name: "Canal 500",
+        streamURL: "https://mi-servidor.com/stream/canal500.m3u8",
+        logoURL: "https://mi-servidor.com/logos/canal500.png"
+      },
+
+    ];
+
+    let currentChannelIndex = 0;
+
+    function fillChannelList() {
+      channelList.innerHTML = '';
+      channels.forEach((channel, index) => {
+        const div = document.createElement('div');
+        div.className = 'channel-card';
+        div.tabIndex = 0;
+
+        const img = document.createElement('img');
+        img.src = channel.logoURL;
+        img.alt = channel.name;
+
+        const name = document.createElement('span');
+        name.textContent = channel.name;
+
+        div.appendChild(img);
+        div.appendChild(name);
+
+        div.addEventListener('click', () => selectChannel(index));
+        div.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectChannel(index);
+          }
+        });
+
+        channelList.appendChild(div);
+      });
+    }
+
+    function updateActiveChannel() {
+      Array.from(channelList.children).forEach((child, idx) => {
+        if (idx === currentChannelIndex) {
+          child.classList.add('active');
+          child.focus();
+        } else {
+          child.classList.remove('active');
+        }
+      });
+    }
+
+    function selectChannel(index) {
+      if (index === currentChannelIndex) return;
+      currentChannelIndex = index;
+      updateActiveChannel();
+      loadAndPlayCurrent();
+    }
+
+    function loadAndPlayCurrent() {
+      const channel = channels[currentChannelIndex];
+      if (!channel.streamURL) return;
+
+      const scrollPos = window.scrollY;
+    // Reproducir canal
+    tvVideo.src = channel.streamURL;
+    videoContainer.classList.add("playing");
+    setTimeout(() => videoContainer.classList.remove("playing"), 3000);
+    window.scrollTo(0, scrollPos);
+      tvVideo.load();
+      videoContainer.classList.add('playing');
+
+      tvVideo.onloadedmetadata = () => {
+        tvVideo.muted = false;
+        tvVideo.play().catch((err) => {
+          console.warn("La reproducciè´¸n automè°©tica con audio fue bloqueada:", err);
+        });
+      };
+    }
+
+    fillChannelList();
+    updateActiveChannel();
+    loadAndPlayCurrent();
+  
+document.getElementById('channelSearch').addEventListener('input', function(e) {
+  const search = e.target.value.toLowerCase();
+  document.querySelectorAll('.channel-card').forEach(card => {
+    const name = card.textContent.toLowerCase();
+    card.style.display = name.includes(search) ? 'flex' : 'none';
+  });
+});
+
+
+tvVideo.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement && screen.orientation?.lock) {
+    screen.orientation.lock('landscape').catch(() => {});
+  }
+});
+
+
+document.getElementById('playButton').addEventListener('click', () => {
+  tvVideo.play();
+  videoContainer.classList.add('playing');
+});
+
+document.getElementById('pauseButton').addEventListener('click', () => {
+  tvVideo.pause();
+  videoContainer.classList.remove('playing');
+});
+
+</script>
+
+<!-- Contenedor de notificaciè´¸n -->
+<div id="channelNotification" style="
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #002244cc;
+  color: #00ffff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: 0 0 10px #00ffff88;
+  display: none;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+"></div>
+<audio id="channelSound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3" preload="auto"></audio>
+
+
+<script>
+  const tvVideo = document.getElementById('tvVideo');
+  const channelList = document.getElementById('channelList');
+  const searchInput = document.getElementById('channelSearch');
+
+  let currentChannelIndex = 0;
+  let favoritos = JSON.parse(localStorage.getItem('favoritos') || '[]');
+
+  function renderChannels() {
+    channelList.innerHTML = '';
+    channels.forEach((channel, index) => {
+      const div = document.createElement('div');
+      div.className = 'channel-card';
+      div.innerHTML = `
+        <img src="${channel.logoURL}" alt="Logo" />
+        <span>${channel.name}</span>
+        <span class="star ${favoritos.includes(index) ? 'favorito' : ''}" data-index="${index}">éˆ½ï¿½</span>
+      `;
+      div.onclick = () => setChannel(index);
+      channelList.appendChild(div);
+    });
+  }
+
+  function setChannel(index) {
+    currentChannelIndex = index;
+    tvVideo.src = channels[index].streamURL;
+    highlightActive(index);
+  }
+
+  function highlightActive(index) {
+    const cards = document.querySelectorAll('.channel-card');
+    cards.forEach((card, i) => {
+      card.classList.toggle('active', i === index);
+    });
+  }
+
+  function buscarCanales(query) {
+    const tarjetas = document.querySelectorAll('.channel-card');
+    channels.forEach((canal, i) => {
+      const match = canal.name.toLowerCase().includes(query);
+      tarjetas[i].style.display = match ? 'flex' : 'none';
+    });
+  }
+
+  channelList.addEventListener('click', e => {
+    if (e.target.classList.contains('star')) {
+      e.stopPropagation();
+      const idx = parseInt(e.target.dataset.index);
+      if (favoritos.includes(idx)) {
+        favoritos = favoritos.filter(i => i !== idx);
+      } else {
+        favoritos.push(idx);
+      }
+      localStorage.setItem('favoritos', JSON.stringify(favoritos));
+      renderChannels();
+      highlightActive(currentChannelIndex);
+    }
+      });
+
+  searchInput.addEventListener('input', () => {
+    buscarCanales(searchInput.value.toLowerCase());
+  });
+document.body.insertAdjacentHTML('beforeend', `
+    <div style="display: flex; justify-content: center; gap: 1rem; margin: 1rem;">
+      <button id="prevChannel">Anterior</button>
+      <button id="nextChannel">Siguiente</button>
+    </div>
+  `);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderChannels();
+    setChannel(currentChannelIndex);
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.id === 'prevChannel') {
+      currentChannelIndex = (currentChannelIndex - 1 + channels.length) % channels.length;
+      setChannel(currentChannelIndex);
+    } else if (e.target.id === 'nextChannel') {
+      currentChannelIndex = (currentChannelIndex + 1) % channels.length;
+      setChannel(currentChannelIndex);
+    }
+  });
+
+let currentChannelIndex = 0;
+
+function playChannel(index) {
+  if (index < 0 || index >= channels.length) return;
+  const channel = channels[index];
+  const scrollPos = window.scrollY;
+    // Reproducir canal
+    tvVideo.src = channel.streamURL;
+    videoContainer.classList.add("playing");
+    setTimeout(() => videoContainer.classList.remove("playing"), 3000);
+    window.scrollTo(0, scrollPos);
+  videoContainer.classList.add("playing");
+
+  document.querySelectorAll('.channel-card').forEach((el, i) => {
+    el.classList.toggle("active", i === index);
+  });
+
+  currentChannelIndex = index;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById('prevChannel').addEventListener('click', () => {
+    let newIndex = (currentChannelIndex - 1 + channels.length) % channels.length;
+    playChannel(newIndex);
+  });
+
+  document.getElementById('nextChannel').addEventListener('click', () => {
+    let newIndex = (currentChannelIndex + 1) % channels.length;
+    playChannel(newIndex);
+  });
+});
+
+document.getElementById('playButton').addEventListener('click', () => {
+  tvVideo.play();
+  videoContainer.classList.add('playing');
+});
+
+document.getElementById('pauseButton').addEventListener('click', () => {
+  tvVideo.pause();
+  videoContainer.classList.remove('playing');
+});
+
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tvVideo = document.getElementById('tvVideo');
+    const channelList = document.getElementById('channelList');
+    let currentChannelIndex = 0;
+
+    function loadChannel(index) {
+      const channel = channels[index];
+      if (channel) {
+        const scrollPos = window.scrollY;
+    // Reproducir canal
+    tvVideo.src = channel.streamURL;
+    videoContainer.classList.add("playing");
+    setTimeout(() => videoContainer.classList.remove("playing"), 3000);
+    window.scrollTo(0, scrollPos);
+        highlightActiveChannel(index);
+        currentChannelIndex = index;
+      }
+    }
+
+    function highlightActiveChannel(index) {
+      const cards = document.querySelectorAll('.channel-card');
+      cards.forEach((card, i) => {
+        card.classList.toggle('active', i === index);
+      });
+    }
+
+    document.getElementById('prevChannel').addEventListener('click', () => {
+      const newIndex = (currentChannelIndex - 1 + channels.length) % channels.length;
+      loadChannel(newIndex);
+    });
+
+    document.getElementById('nextChannel').addEventListener('click', () => {
+      const newIndex = (currentChannelIndex + 1) % channels.length;
+      loadChannel(newIndex);
+    });
+
+    // Inicializa la lista de canales
+    channels.forEach((channel, index) => {
+      const card = document.createElement('div');
+      card.className = 'channel-card';
+      card.innerHTML = `<img src="${channel.logoURL}" alt="${channel.name}" /><span>${channel.name}</span>`;
+      card.addEventListener('click', () => loadChannel(index));
+      channelList.appendChild(card);
+    });
+
+    // Carga el primer canal al iniciar
+    loadChannel(0);
+  });
+
+document.getElementById('playButton').addEventListener('click', () => {
+  tvVideo.play();
+  videoContainer.classList.add('playing');
+});
+
+document.getElementById('pauseButton').addEventListener('click', () => {
+  tvVideo.pause();
+  videoContainer.classList.remove('playing');
+});
+
+</script>
+
+
+<script>
+  const playPauseButton = document.getElementById('playPauseButton');
+  const playPauseIcon = document.getElementById('playPauseIcon');
+
+  playPauseButton.addEventListener('click', () => {
+    if (tvVideo.paused) {
+      tvVideo.play();
+      playPauseIcon.src = "https://i.postimg.cc/7P7zd1p1/1746128693689.png";
+    } else {
+      tvVideo.pause();
+      playPauseIcon.src = "https://i.postimg.cc/WzMJZjMY/1746128401985.png";
+    }
+  });
+
+  tvVideo.addEventListener('play', () => {
+    playPauseIcon.src = "https://i.postimg.cc/7P7zd1p1/1746128693689.png";
+  });
+
+  tvVideo.addEventListener('pause', () => {
+    playPauseIcon.src = "https://i.postimg.cc/WzMJZjMY/1746128401985.png";
+  });
+</script>
+</body>
+</html>
